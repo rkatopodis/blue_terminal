@@ -7,13 +7,15 @@ class DiscoverButton extends StatelessWidget {
   final Key key;
   final BluetoothState state;
   final bool discoveryOngoing;
-  final VoidCallback onPressed;
+  final VoidCallback onRefresh;
+  final VoidCallback onCancel;
 
   DiscoverButton({
     this.key,
     @required this.state,
     @required this.discoveryOngoing,
-    @required this.onPressed
+    @required this.onRefresh,
+    @required this.onCancel
   }): super(key: key);
 
   @override
@@ -32,15 +34,18 @@ class DiscoverButton extends StatelessWidget {
       );
     } else if (discoveryOngoing) {
       // ProgressIndicator
-      return FittedBox(
-        child: Container(
-          margin: EdgeInsets.all(30.0),
-          child: CircularProgressIndicator(),
+      return GestureDetector(
+        onTap: onCancel,
+        child: FittedBox(
+          child: Container(
+            margin: EdgeInsets.all(30.0),
+            child: CircularProgressIndicator(),
+          ),
         ),
       );
     } else {
       // Refresh icon
-      return IconButton(icon: Icon(Icons.refresh), onPressed: onPressed);
+      return IconButton(icon: Icon(Icons.refresh), onPressed: onRefresh);
     }
   }
 }

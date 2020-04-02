@@ -13,15 +13,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   BluetoothState _btState = BluetoothState.UNKNOWN;
-  StreamController<BluetoothDiscoveryResult> _discoveryController;
+  StreamSubscription<BluetoothDiscoveryResult> _discoverySubscription;
   List<BluetoothDevice> _discoveryResults = List<BluetoothDevice>();
   bool _discoveryOngoing = false;
 
   void _discover() {
+    _cancelDiscovery();
     setState(() {
       _discoveryOngoing = true;
       _discoveryResults.clear();
-      FlutterBluetoothSerial.instance.startDiscovery()
+      _discoverySubscription = FlutterBluetoothSerial.instance.startDiscovery()
       .listen(
         (BluetoothDiscoveryResult result) {
           setState(() => _discoveryResults.add(result.device));
@@ -30,9 +31,20 @@ class _HomeState extends State<Home> {
         onDone: () {
           print("Surely we are done now!");
           setState(() => _discoveryOngoing = false);
-        }
+        },
+        onError: (error) {
+          print("Oh-Oh! An error occurred!");
+          print("$error");
+          setState(() => _discoveryOngoing = false);
+        },
+        cancelOnError: true
       );
     });
+  }
+
+  void _cancelDiscovery() {
+    _discoverySubscription?.cancel();
+    setState(() => _discoveryOngoing = false);
   }
 
   @override
@@ -42,6 +54,21 @@ class _HomeState extends State<Home> {
     // receiver to be enabled
     FlutterBluetoothSerial.instance.requestEnable();
 
+    // Monitor changes in bluetooth state 
+    FlutterBluetoothSerial.instance.onStateChanged().listen(
+      (BluetoothState state) {
+        setState(() {
+          _btState = state;
+        });
+
+        if (state == BluetoothState.STATE_ON) {
+          _discover();
+        } else if (state == BluetoothState.STATE_OFF) {
+          _cancelDiscovery();
+        }
+      }
+    );
+
     // Make a first search for devices when bluetooth is on
     FlutterBluetoothSerial.instance.state.then((state) {
       setState(() {
@@ -50,19 +77,6 @@ class _HomeState extends State<Home> {
 
       if (state == BluetoothState.STATE_ON) {
         _discover();
-      } else {
-        // If the bluetooth receiver is not on, schedule a search for when it turns on
-        FlutterBluetoothSerial.instance.onStateChanged().listen(
-          (BluetoothState state) {
-            setState(() {
-              _btState = state;
-            });
-
-            if (state == BluetoothState.STATE_ON) {
-              _discover();
-            }
-          }
-        );
       }
     });
   }
@@ -73,7 +87,7 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text('Bluetooth Terminal'),
         actions: <Widget>[
-          DiscoverButton(state: _btState, discoveryOngoing: _discoveryOngoing, onPressed: _discover,),
+          DiscoverButton(state: _btState, discoveryOngoing: _discoveryOngoing, onRefresh: _discover, onCancel: _cancelDiscovery),
         ],
       ),
       body: SafeArea(
