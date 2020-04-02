@@ -36,6 +36,12 @@ class DeviceList extends StatelessWidget {
       return ListView.separated(
         itemBuilder: (BuildContext context, int index) => ListTile(
           title: Text(devices[index].name),
+          subtitle: Text(devices[index].address),
+          leading: Icon(
+            (devices[index].isConnected ? Icons.bluetooth_connected : Icons.bluetooth_searching)
+          ),
+          trailing: Icon(Icons.arrow_right),
+          onTap: () => {},
         ),
         separatorBuilder: (BuildContext context, int index) => Divider(),
         itemCount: devices.length
