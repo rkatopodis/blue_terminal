@@ -14,36 +14,17 @@ class _HomeState extends State<Home> {
 
   BluetoothState _btState = BluetoothState.UNKNOWN;
   StreamController<BluetoothDiscoveryResult> _discoveryController;
-  List<BluetoothDiscoveryResult> _discoveryResults = List();
+  List<BluetoothDevice> _discoveryResults = List<BluetoothDevice>();
   bool _discoveryOngoing = false;
 
   void _discover() {
     setState(() {
-      // _discoveryController = StreamController()
-      // ..addStream(
-      //   FlutterBluetoothSerial.instance.startDiscovery()
-      // );
-      // _discoveryController.onListen = () => setState(() => _discoveryOngoing = true);
-      // _discoveryController.done
-      // ..then((_) => setState(() => _discoveryOngoing = false))
-      // ..then((_) => print("Hey! I'm done discovering!"));
-
-      // // For testing purposes only
-      // _discoveryController.stream.listen(
-      //   (device) => print(device.device.name),
-      //   onDone: () {
-      //     print("For sure I'm done discovering now!");
-      //     setState(() => _discoveryOngoing = false);
-      //   }
-      // );
-      // _discoveryController.onCancel = () => print("Hey! I've been canceled!");
-      // // Finish test
       _discoveryOngoing = true;
       _discoveryResults.clear();
       FlutterBluetoothSerial.instance.startDiscovery()
       .listen(
         (BluetoothDiscoveryResult result) {
-          _discoveryResults.add(result);
+          setState(() => _discoveryResults.add(result.device));
           print(result.device.name);
         },
         onDone: () {
@@ -90,16 +71,15 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.bluetooth),
         title: Text('Bluetooth Terminal'),
         actions: <Widget>[
-          DiscoverButton(state: _btState, discoveryOngoing: _discoveryOngoing, onPressed: () {},),
+          DiscoverButton(state: _btState, discoveryOngoing: _discoveryOngoing, onPressed: _discover,),
         ],
       ),
       body: SafeArea(
         child: DeviceList(
           state: _btState,
-          devices: _discoveryResults.map((result) => result.device).toList()
+          devices: _discoveryResults
         ),
       ),
     );
