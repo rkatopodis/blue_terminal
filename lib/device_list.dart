@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart";
 
+import "device.dart";
+
 class DeviceList extends StatelessWidget {
 
   final Key key;
@@ -35,14 +37,9 @@ class DeviceList extends StatelessWidget {
       );
     } else {
       return ListView.separated(
-        itemBuilder: (BuildContext context, int index) => ListTile(
-          title: Text(devices[index].name),
-          subtitle: Text(devices[index].address),
-          leading: Icon(
-            (devices[index].isConnected ? Icons.bluetooth_connected : Icons.bluetooth_searching)
-          ),
-          trailing: Icon(Icons.arrow_right),
-          onTap: () => {},
+        itemBuilder: (BuildContext context, int index) => Device(
+          device: devices[index],
+          onTap: () => print("Device tapped!")
         ),
         separatorBuilder: (BuildContext context, int index) => Divider(),
         itemCount: devices.length
