@@ -1,11 +1,13 @@
 import "package:flutter/material.dart";
 import "package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart";
 
+import "util.dart";
+
 class Device extends StatelessWidget {
 
   final Key key;
   final BluetoothDevice device;
-  final VoidCallback onTap;
+  final DeviceSelectionCallback onTap;
 
   Device({this.key, @required this.device, @required this.onTap}): super(key: key);
 
@@ -18,7 +20,7 @@ class Device extends StatelessWidget {
         (device.isConnected ? Icons.bluetooth_connected : Icons.bluetooth_searching)
       ),
       trailing: Icon(Icons.arrow_right),
-      onTap: onTap,
+      onTap: () => onTap(device),
     );
   }
 }

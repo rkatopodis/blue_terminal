@@ -2,14 +2,21 @@ import "package:flutter/material.dart";
 import "package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart";
 
 import "device.dart";
+import "util.dart";
 
 class DeviceList extends StatelessWidget {
 
   final Key key;
   final BluetoothState state;
   final List<BluetoothDevice> devices;
+  final DeviceSelectionCallback onDeviceSelected;
 
-  DeviceList({this.key, @required this.state, @required this.devices}): super(key: key);
+  DeviceList({
+    this.key,
+    @required this.state,
+    @required this.devices,
+    @required this.onDeviceSelected
+  }): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +46,7 @@ class DeviceList extends StatelessWidget {
       return ListView.separated(
         itemBuilder: (BuildContext context, int index) => Device(
           device: devices[index],
-          onTap: () => print("Device tapped!")
+          onTap: onDeviceSelected,
         ),
         separatorBuilder: (BuildContext context, int index) => Divider(),
         itemCount: devices.length

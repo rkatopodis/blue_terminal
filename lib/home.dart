@@ -4,6 +4,7 @@ import "package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart";
 
 import "discover_button.dart";
 import "device_list.dart";
+import "chat.dart";
 
 class Home extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class _HomeState extends State<Home> {
   BluetoothState _btState = BluetoothState.UNKNOWN;
   StreamSubscription<BluetoothDiscoveryResult> _discoverySubscription;
   List<BluetoothDevice> _discoveryResults = List<BluetoothDevice>();
+  BluetoothDevice _selectedDevice;
   bool _discoveryOngoing = false;
 
   void _discover() {
@@ -45,6 +47,21 @@ class _HomeState extends State<Home> {
   void _cancelDiscovery() {
     _discoverySubscription?.cancel();
     setState(() => _discoveryOngoing = false);
+  }
+
+  void _onDeviceSelected(BluetoothDevice device) {
+    setState(() {
+      _selectedDevice = device;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return Chat(device: device);
+          }
+        ),
+      );
+    });
   }
 
   @override
@@ -93,7 +110,8 @@ class _HomeState extends State<Home> {
       body: SafeArea(
         child: DeviceList(
           state: _btState,
-          devices: _discoveryResults
+          devices: _discoveryResults,
+          onDeviceSelected: _onDeviceSelected,
         ),
       ),
     );
