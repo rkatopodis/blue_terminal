@@ -85,7 +85,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bluetooth Terminal'),
+        title: const Text('Bluetooth Terminal'),
         actions: <Widget>[
           DiscoverButton(state: _btState, discoveryOngoing: _discoveryOngoing, onRefresh: _discover, onCancel: _cancelDiscovery),
         ],

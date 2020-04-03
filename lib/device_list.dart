@@ -19,7 +19,7 @@ class DeviceList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.bluetooth_disabled),
+            icon: const Icon(Icons.bluetooth_disabled),
             onPressed: FlutterBluetoothSerial.instance.requestEnable,
             iconSize: 72,
           ),
@@ -28,6 +28,7 @@ class DeviceList extends StatelessWidget {
             child: Text(
               "Your bluetooth seems to be disabled. Tap on the icon above to turn it on",
               textAlign: TextAlign.center,
+              style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.2)
             ),
           ),
         ],

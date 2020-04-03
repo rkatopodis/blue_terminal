@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'BlueHome.dart';
 import 'home.dart';
 
 void main() => runApp(MyApp());
