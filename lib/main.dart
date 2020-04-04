@@ -9,7 +9,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Blue Terminal',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
       home: Home()

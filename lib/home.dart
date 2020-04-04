@@ -50,6 +50,7 @@ class _HomeState extends State<Home> {
   }
 
   void _onDeviceSelected(BluetoothDevice device) {
+    print("Selecting device");
     setState(() {
       _selectedDevice = device;
 
@@ -57,7 +58,7 @@ class _HomeState extends State<Home> {
         context,
         MaterialPageRoute(
           builder: (BuildContext context) {
-            return Chat(device: device);
+            return Chat(device: device,);
           }
         ),
       );
@@ -75,6 +76,7 @@ class _HomeState extends State<Home> {
     FlutterBluetoothSerial.instance.onStateChanged().listen(
       (BluetoothState state) {
         setState(() {
+          print("State changed to $state");
           _btState = state;
         });
 
