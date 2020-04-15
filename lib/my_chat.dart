@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import "package:flutter/material.dart";
 import "package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart";
+import "package:provider/provider.dart";
 
 enum Interlocutor { self, device }
 
@@ -49,18 +50,18 @@ class MessageTile extends StatelessWidget {
   }
 }
 
-class Chat extends StatefulWidget {
+class AltChat extends StatefulWidget {
 
   final Key key;
   final BluetoothDevice device;
 
-  Chat({this.key, @required this.device,}): super(key: key);
+  AltChat({this.key, @required this.device,}): super(key: key);
 
   @override
   _ChatState createState() => _ChatState();
 }
 
-class _ChatState extends State<Chat> {
+class _ChatState extends State<AltChat> {
   BluetoothConnection _connection;
   StreamSubscription<String> _inputSubscription;
   List<Message> messages = List();
